@@ -16,7 +16,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@types/helmet": "^4.0.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
     "cors": "^2.8.5",
@@ -31,6 +30,7 @@
     "typeorm": "^0.3.12"
   },
   "devDependencies": {
+    "@types/helmet": "^4.0.0",
     "@types/cors": "^2.8.13",
     "@types/express": "^4.17.17",
     "@types/morgan": "^1.9.4",
