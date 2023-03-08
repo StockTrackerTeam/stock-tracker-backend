@@ -27,7 +27,7 @@ jobs:
 
   link-to-jira:
     runs-on: ubuntu-latest
-    needs: [lint-test]
+    needs: [lint, test]
     env:
       JIRA_TOKEN: ${{ secrets.JIRA_TOKEN }}
     steps:
