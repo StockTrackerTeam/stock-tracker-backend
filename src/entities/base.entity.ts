@@ -3,14 +3,14 @@ import { CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, Upd
 @Entity()
 export class BaseEntity {
   @PrimaryGeneratedColumn()
-  id: number;
+    id: number;
 
   @CreateDateColumn()
-  createdAt: Date;
+    createdAt: Date;
 
   @UpdateDateColumn()
-  updatedAt?: Date | null;
+    updatedAt?: Date | null;
 
   @DeleteDateColumn()
-  deletedAt?: Date | null;
-};
+    deletedAt?: Date | null;
+}

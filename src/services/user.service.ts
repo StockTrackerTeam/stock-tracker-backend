@@ -1,10 +1,9 @@
 import { UserRepository } from '../repository/user.rerpository';
-import { UserCreateDTO } from '../dtos/user.dtos';
+import { type UserCreateDTO } from '../dtos/user.dtos';
 import { validate } from 'class-validator';
 import { StatusCodes } from 'http-status-codes';
-import { IResult, RESULT_OK, USER_NOT_FOUND } from '../utils/interfaces/result.interface';;
-import { User } from '../entities/user.entity';
-import { camelToKebab, extractErrorKeysFromErrors } from '../utils/functions';
+import { type IResult, RESULT_OK } from '../utils/interfaces/result.interface';
+import { extractErrorKeysFromErrors } from '../utils/functions';
 
 const userRepository = new UserRepository();
 
@@ -14,7 +13,7 @@ export class UserService {
 
     if (errors.length > 0) {
       console.log('errors: ', errors[0]);
-      
+
       const errorKeys = extractErrorKeysFromErrors(errors);
 
       return {
@@ -33,7 +32,7 @@ export class UserService {
         resultKeys: ['password-not-match']
       };
     }
-    if (userCreateDTO.email && userCreateDTO.email !== userCreateDTO.confirmEmail) {
+    if (userCreateDTO.email !== '' && userCreateDTO.email !== userCreateDTO.confirmEmail) {
       return {
         statusCode: StatusCodes.BAD_REQUEST,
         message: 'The email does not match, please try again.',
@@ -42,8 +41,8 @@ export class UserService {
       };
     }
 
-    const userCreated = await userRepository.save({...userCreateDTO, isActive: true})
-    
+    const userCreated = await userRepository.save({ ...userCreateDTO, isActive: true });
+
     return {
       statusCode: StatusCodes.CREATED,
       message: 'User created!',

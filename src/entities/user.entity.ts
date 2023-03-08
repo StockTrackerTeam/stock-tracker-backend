@@ -7,27 +7,27 @@ export class User extends BaseEntity {
     type: 'varchar',
     length: 50
   })
-  username: string;
+    username: string;
 
   @Column({
     type: 'varchar'
   })
-  firstName: string;
+    firstName: string;
 
   @Column({
     type: 'varchar'
   })
-  lastName: string;
+    lastName: string;
 
   @Column({
     type: 'varchar',
     nullable: true
   })
-  email: string | null;  // Todavia no sabemos si va o no
+    email: string | null; // Todavia no sabemos si va o no
 
   @Column()
-  password: string;
+    password: string;
 
   @Column()
-  isActive: Boolean = true;
-};
+    isActive = true;
+}

@@ -1,10 +1,10 @@
-import { ValidationError } from 'class-validator';
+import { type ValidationError } from 'class-validator';
 
-export function camelToKebab(str: String): String {
+export function camelToKebab (str: string): string {
   return str.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
 }
 
-export function extractErrorKeysFromErrors(errors: ValidationError[]): String[] {
+export function extractErrorKeysFromErrors (errors: ValidationError[]): string[] {
   const errorKeys = [];
 
   for (const error of errors) {

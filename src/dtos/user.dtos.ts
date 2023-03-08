@@ -6,37 +6,37 @@ export class UserCreateDTO {
   @IsNotEmpty()
   @MinLength(6)
   @MaxLength(20)
-  username: string;
+    username: string;
 
   @IsString()
   @IsNotEmpty()
   @MinLength(8)
   @MaxLength(30)
   @ValidatePassword()
-  password: string;
+    password: string;
 
   @IsString()
   @IsNotEmpty()
   @MinLength(8)
   @MaxLength(30)
   @ValidatePassword()
-  confirmPassword: string;
+    confirmPassword: string;
 
   @IsString()
   @IsNotEmpty()
   @MaxLength(50)
-  firstName: string;
+    firstName: string;
 
   @IsString()
   @IsNotEmpty()
   @MaxLength(50)
-  lastName: string;
+    lastName: string;
 
   @IsEmail()
   @IsOptional()
-  email: string;
+    email: string;
 
   @IsEmail()
   @IsOptional()
-  confirmEmail: string;
+    confirmEmail: string;
 }

@@ -32,7 +32,7 @@
  *       isActive:
  *         type: boolean
  *         description: Returns wheter the user is active or not
- * 
+ *
  *   UserCreate:
  *     type: object
  *     properties:
@@ -77,7 +77,7 @@
  *         description: confirm email
  */
 
-import { Request, Response } from 'express';
+import { type Request, type Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { UserRepository } from '../repository/user.rerpository';
 import { plainToClass } from 'class-transformer';
@@ -119,8 +119,8 @@ export class UserController {
 
       const result = await userService.create(userCreate);
 
-      res.status(result.statusCode).json({message: result.message, entity: result.entity});
-    } catch (error) {
+      res.status(result.statusCode).json({ message: result.message, entity: result.entity });
+    } catch (error: any) {
       res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(`Server error: ${error}`);
     }
   }

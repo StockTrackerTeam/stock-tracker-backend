@@ -1,10 +1,10 @@
-import { BaseEntity } from '../../entities/base.entity';
+import { type BaseEntity } from '../../entities/base.entity';
 
 export interface IResult {
-  statusCode: number;
-  message: String;
-  entity: BaseEntity | null;
-  resultKeys: String[];
+  statusCode: number
+  message: string
+  entity: BaseEntity | null
+  resultKeys: string[]
 }
 
 export const RESULT_OK = 'ok';
