@@ -9,6 +9,7 @@
     "emitDecoratorMetadata": true,
     "resolveJsonModule": true,
     "strict": true,
+    "strictPropertyInitialization": false,
     "moduleResolution": "node",
     "baseUrl": ".",
     "paths": {
