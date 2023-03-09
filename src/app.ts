@@ -1,4 +1,3 @@
-import 'reflect-metadata';
 import express from 'express';
 import { connect } from './db';
 import { json } from 'body-parser';
@@ -8,6 +7,8 @@ import cors from 'cors';
 import morgan from 'morgan';
 import swaggerUi from 'swagger-ui-express';
 import swaggerJSDoc from 'swagger-jsdoc';
+// Routers
+import userRouter from './routes/user.router';
 
 dotenv.config(); // Load .env file into process.env
 
@@ -25,9 +26,9 @@ const options = {
   definition: {
     openapi: '3.0.0',
     info: {
-      title: 'My API',
+      title: 'StockTracker API',
       version: '1.0.0',
-      description: 'API documentation'
+      description: 'Rest API docs for StockTracker'
     }
   },
   apis: ['src/**/*.ts']
@@ -38,6 +39,7 @@ const swaggerSpec = swaggerJSDoc(options);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Define routes here
+app.use('/api/v1/users', userRouter);
 
 connect()
   .then(() => {
