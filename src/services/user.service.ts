@@ -2,7 +2,7 @@ import { UserRepository } from '../repository/user.rerpository';
 import { type UserCreateDTO } from '../dtos/user.dtos';
 import { validate } from 'class-validator';
 import { StatusCodes } from 'http-status-codes';
-import { type IResult, RESULT_OK } from '../utils/interfaces/result.interface';
+import { type IResult, RESULT_OK, USER_NOT_FOUND } from '../utils/interfaces/result.interface';
 import { type User } from '../entities/user.entity';
 import { extractErrorKeysFromErrors } from '../utils/functions';
 
@@ -55,5 +55,31 @@ export class UserService {
   async find (): Promise<User[]> {
     // TODO: add patterns for searching users
     return await userRepository.find();
+  }
+
+  async changeUserState (id: number): Promise<IResult> {
+    const currentUser = await userRepository.findOneBy({ id });
+
+    if (currentUser == null) {
+      return {
+        statusCode: StatusCodes.NOT_FOUND,
+        message: `No user found with ID: ${id}`,
+        entity: null,
+        resultKeys: [USER_NOT_FOUND]
+      };
+    }
+
+    currentUser.isActive = !currentUser.isActive;
+    const state = currentUser.isActive ? 'ACTIVE' : 'INACTIVE';
+
+    await userRepository.save(currentUser);
+
+    const updatedUser = await userRepository.findOneBy({ id });
+    return {
+      statusCode: StatusCodes.OK,
+      message: `The state of the user with ID ${id} has been changed to ${state}`,
+      entity: updatedUser,
+      resultKeys: [RESULT_OK]
+    };
   }
 }
