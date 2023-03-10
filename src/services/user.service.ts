@@ -3,6 +3,7 @@ import { type UserCreateDTO } from '../dtos/user.dtos';
 import { validate } from 'class-validator';
 import { StatusCodes } from 'http-status-codes';
 import { type IResult, RESULT_OK } from '../utils/interfaces/result.interface';
+import { type User } from '../entities/user.entity';
 import { extractErrorKeysFromErrors } from '../utils/functions';
 
 const userRepository = new UserRepository();
@@ -49,5 +50,10 @@ export class UserService {
       entity: userCreated,
       resultKeys: [RESULT_OK]
     };
+  }
+
+  async find (): Promise<User[]> {
+    // TODO: add patterns for searching users
+    return await userRepository.find();
   }
 }
