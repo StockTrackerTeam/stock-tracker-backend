@@ -124,4 +124,33 @@ export class UserController {
       res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(`Server error: ${error}`);
     }
   }
+
+  /**
+ * @swagger
+ * /users:
+ *   get:
+ *     summary: Lists all users
+ *     tags: [Users]
+ *     responses:
+ *       200:
+ *         description: The user's list
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/definitions/User'
+ *       500:
+ *         description: Internal server error
+ */
+  async getAllUsers (req: Request, res: Response): Promise<void> {
+    // TODO: Add "orderBy" to order the list of users by a specific property
+    try {
+      const allUsers = await userService.find();
+
+      res.status(StatusCodes.OK).json({ users: allUsers, count: allUsers.length });
+    } catch (error) {
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(`Server error: ${error}`);
+    }
+  }
 }
