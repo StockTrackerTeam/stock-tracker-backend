@@ -80,8 +80,8 @@
 import { type Request, type Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { UserRepository } from '../repository/user.rerpository';
-import { plainToClass } from 'class-transformer';
-import { UserCreateDTO } from '../dtos/user.dtos';
+import { plainToClass, plainToInstance } from 'class-transformer';
+import { UserCreateDTO, UserUpdateDTO } from '../dtos/user.dtos';
 import { UserService } from '../services/user.service';
 
 export const userRepository = new UserRepository();
@@ -149,6 +149,46 @@ export class UserController {
       const allUsers = await userService.find();
 
       res.status(StatusCodes.OK).json({ users: allUsers, count: allUsers.length });
+    } catch (error) {
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(`Server error: ${error}`);
+    }
+  }
+
+  /**
+ * @swagger
+ * /users/:id:
+ *   put:
+ *     summary: Updates a specific user
+ *     tags: [Users]
+ *     requestBody:
+ *       description: The user's properties to update
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/definitions/User'
+ *     responses:
+ *       200:
+ *         description: The user updated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/definitions/User'
+ *       404:
+ *         description: user not found
+ *       400:
+ *         description: invalid user data
+ *       500:
+ *         description: Internal server error
+ */
+  async updateUser (req: Request, res: Response): Promise<void> {
+    try {
+      const id = Number(req.params.id);
+      const userUpdate = plainToInstance(UserUpdateDTO, req.body);
+
+      const result = await userService.update(id, userUpdate);
+
+      res.status(result.statusCode).json({ message: result.message, entity: result.entity });
     } catch (error) {
       res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(`Server error: ${error}`);
     }
