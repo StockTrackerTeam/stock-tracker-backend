@@ -2,7 +2,7 @@ import { UserRepository } from '../repository/user.rerpository';
 import { type UserCreateDTO } from '../dtos/user.dtos';
 import { validate } from 'class-validator';
 import { StatusCodes } from 'http-status-codes';
-import { type IResult, RESULT_OK } from '../utils/interfaces/result.interface';
+import { type IResult, RESULT_OK, USER_NOT_FOUND } from '../utils/interfaces/result.interface';
 import { type User } from '../entities/user.entity';
 import { extractErrorKeysFromErrors } from '../utils/functions';
 
@@ -55,5 +55,24 @@ export class UserService {
   async find (): Promise<User[]> {
     // TODO: add patterns for searching users
     return await userRepository.find();
+  }
+
+  async findOneById (id: number): Promise<IResult> {
+    const user = await userRepository.findOneBy({ id });
+
+    if (user == null) {
+      return {
+        statusCode: StatusCodes.BAD_REQUEST,
+        message: `No user found with ID: ${id}`,
+        entity: null,
+        resultKeys: [USER_NOT_FOUND]
+      };
+    }
+    return {
+      statusCode: StatusCodes.OK,
+      message: 'User foundd',
+      entity: user,
+      resultKeys: [RESULT_OK]
+    };
   }
 }
