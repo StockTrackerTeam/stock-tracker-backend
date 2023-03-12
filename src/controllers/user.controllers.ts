@@ -183,4 +183,33 @@ export class UserController {
       res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(`Server error: ${error}`);
     }
   }
+
+    /**
+ * @swagger
+ * /users/:id:
+ *   get:
+ *     summary: Finds a specific user
+ *     tags: [Users]
+ *     responses:
+ *       200:
+ *         description: The user found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/definitions/User'
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Internal server error
+ */
+  async getUser (req: Request, res: Response): Promise<void> {
+    try {
+      const id = Number(req.params.id);
+      const result = await userService.findOneById(id);
+
+      res.status(result.statusCode).json({ message: result.message, entity: result.entity });
+    } catch (error) {
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(`Server error: ${error}`);
+    }
+  }
 }

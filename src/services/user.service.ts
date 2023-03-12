@@ -82,4 +82,24 @@ export class UserService {
       resultKeys: [RESULT_OK]
     };
   }
+
+  async findOneById (id: number): Promise<IResult> {
+    const user = await userRepository.findOneBy({ id });
+
+    if (user == null) {
+      return {
+        statusCode: StatusCodes.BAD_REQUEST,
+        message: `No user found with ID: ${id}`,
+        entity: null,
+        resultKeys: [USER_NOT_FOUND]
+      };
+    }
+    
+    return {
+      statusCode: StatusCodes.OK,
+      message: 'User foundd',
+      entity: user,
+      resultKeys: [RESULT_OK]
+    };
+  }
 }
