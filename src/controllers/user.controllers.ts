@@ -184,7 +184,7 @@ export class UserController {
     }
   }
 
-    /**
+  /**
  * @swagger
  * /users/:id:
  *   get:

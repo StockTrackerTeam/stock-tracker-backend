@@ -94,7 +94,7 @@ export class UserService {
         resultKeys: [USER_NOT_FOUND]
       };
     }
-    
+
     return {
       statusCode: StatusCodes.OK,
       message: 'User foundd',
