@@ -156,6 +156,64 @@ export class UserController {
 
   /**
  * @swagger
+ * /users/state/:id:
+ *   patch:
+ *     summary: Changes the state of an user
+ *     tags: [Users]
+ *     responses:
+ *       200:
+ *         description: The user's state changed
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/definitions/User'
+ *       404:
+ *         description: user not found
+ *       500:
+ *         description: Internal server error
+ */
+  async changeUserState (req: Request, res: Response): Promise<void> {
+    try {
+      const id = Number(req.params.id);
+
+      const result = await userService.changeUserState(id);
+
+      res.status(result.statusCode).send({ message: result.message });
+    } catch (error) {
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(`Server error: ${error}`);
+    }
+  }
+
+  /**
+ * @swagger
+ * /users/:id:
+ *   get:
+ *     summary: Finds a specific user
+ *     tags: [Users]
+ *     responses:
+ *       200:
+ *         description: The user found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/definitions/User'
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Internal server error
+ */
+  async getUser (req: Request, res: Response): Promise<void> {
+    try {
+      const id = Number(req.params.id);
+      const result = await userService.findOneById(id);
+
+      res.status(result.statusCode).json({ message: result.message, entity: result.entity });
+    } catch (error) {
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(`Server error: ${error}`);
+    }
+  }
+    /**
+ * @swagger
  * /users/:id:
  *   put:
  *     summary: Updates a specific user
@@ -187,10 +245,37 @@ export class UserController {
       const userUpdate = plainToInstance(UserUpdateDTO, req.body);
 
       const result = await userService.update(id, userUpdate);
-
+  
       res.status(result.statusCode).json({ message: result.message, entity: result.entity });
     } catch (error) {
       res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(`Server error: ${error}`);
     }
   }
+  
+    /**
+ * @swagger
+ * /users/:id:
+ *   delete:
+ *     summary: Deletes a specific user
+ *     tags: [Users]
+ *     responses:
+ *       200:
+ *         description: Confirmation's message
+ *       404:
+ *         description: user not found
+ *       500:
+ *         description: Internal server error
+ */
+    async deleteUser (req: Request, res: Response): Promise<void> {
+      try {
+        const id = Number(req.params.id);
+  
+        const result = await userService.delete(id);
+  
+        res.status(result.statusCode).send({ user: result.entity, message: result.message });
+      } catch (error) {
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(`Server error: ${error}`);
+      }
+    }
+
 }
