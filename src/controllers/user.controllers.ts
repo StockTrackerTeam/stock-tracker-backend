@@ -213,7 +213,7 @@ export class UserController {
     }
   }
 
-    /**
+  /**
  * @swagger
  * /users/:id:
  *   delete:
@@ -234,7 +234,6 @@ export class UserController {
       const result = await userService.delete(id);
 
       res.status(result.statusCode).send({ user: result.entity, message: result.message });
-
     } catch (error) {
       res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(`Server error: ${error}`);
     }
