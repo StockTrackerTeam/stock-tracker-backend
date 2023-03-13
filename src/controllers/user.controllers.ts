@@ -212,7 +212,8 @@ export class UserController {
       res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(`Server error: ${error}`);
     }
   }
-    /**
+
+  /**
  * @swagger
  * /users/:id:
  *   put:
@@ -245,14 +246,14 @@ export class UserController {
       const userUpdate = plainToInstance(UserUpdateDTO, req.body);
 
       const result = await userService.update(id, userUpdate);
-  
+
       res.status(result.statusCode).json({ message: result.message, entity: result.entity });
     } catch (error) {
       res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(`Server error: ${error}`);
     }
   }
-  
-    /**
+
+  /**
  * @swagger
  * /users/:id:
  *   delete:
@@ -266,16 +267,15 @@ export class UserController {
  *       500:
  *         description: Internal server error
  */
-    async deleteUser (req: Request, res: Response): Promise<void> {
-      try {
-        const id = Number(req.params.id);
-  
-        const result = await userService.delete(id);
-  
-        res.status(result.statusCode).send({ user: result.entity, message: result.message });
-      } catch (error) {
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(`Server error: ${error}`);
-      }
-    }
+  async deleteUser (req: Request, res: Response): Promise<void> {
+    try {
+      const id = Number(req.params.id);
 
+      const result = await userService.delete(id);
+
+      res.status(result.statusCode).send({ user: result.entity, message: result.message });
+    } catch (error) {
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(`Server error: ${error}`);
+    }
+  }
 }
