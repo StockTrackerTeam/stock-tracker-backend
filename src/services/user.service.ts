@@ -102,4 +102,26 @@ export class UserService {
       resultKeys: [RESULT_OK]
     };
   }
+
+  async delete (id: number): Promise<IResult> {
+    const userToDelete = await userRepository.findOneBy({ id });
+
+    if (userToDelete == null) {
+      return {
+        statusCode: StatusCodes.NOT_FOUND,
+        message: `No user found with ID: ${id}`,
+        entity: null,
+        resultKeys: [USER_NOT_FOUND]
+      };
+    }
+
+    await userRepository.update(id, { deletedAt: new Date() });
+
+    return {
+      statusCode: StatusCodes.OK,
+      message: `User with ID ${id} successfully deleted`,
+      entity: null,
+      resultKeys: [RESULT_OK]
+    };
+  }
 }
