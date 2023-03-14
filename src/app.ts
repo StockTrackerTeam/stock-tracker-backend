@@ -9,6 +9,7 @@ import swaggerUi from 'swagger-ui-express';
 import swaggerJSDoc from 'swagger-jsdoc';
 // Routers
 import userRouter from './routes/user.router';
+import authRouter from './routes/auth.router';
 
 dotenv.config(); // Load .env file into process.env
 
@@ -40,6 +41,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Define routes here
 app.use('/api/v1/users', userRouter);
+app.use('/api/v1/auth', authRouter);
 
 connect()
   .then(() => {

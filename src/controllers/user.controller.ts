@@ -32,6 +32,9 @@
  *       isActive:
  *         type: boolean
  *         description: Returns wheter the user is active or not
+ *       roleId:
+ *         type: number
+ *         description: role Id of the user's role
  *
  *   UserCreate:
  *     type: object
@@ -75,6 +78,9 @@
  *       confirmEmail:
  *         type: string
  *         description: confirm email
+ *       roleId:
+ *         type: number
+ *         description: role Id of the user's role
  */
 
 import { type Request, type Response } from 'express';
@@ -155,6 +161,75 @@ export class UserController {
   }
 
   /**
+  * @swagger
+  * /users/:id:
+  *   get:
+  *     summary: Finds a specific user
+  *     tags: [Users]
+  *     responses:
+  *       200:
+  *         description: The user found
+  *         content:
+  *           application/json:
+  *             schema:
+  *               $ref: '#/definitions/User'
+  *       404:
+  *         description: User not found
+  *       500:
+  *         description: Internal server error
+  */
+  async getUser (req: Request, res: Response): Promise<void> {
+    try {
+      const id = Number(req.params.id);
+      const result = await userService.findOneById(id);
+
+      res.status(result.statusCode).json({ message: result.message, entity: result.entity });
+    } catch (error) {
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(`Server error: ${error}`);
+    }
+  }
+
+  /**
+  * @swagger
+  * /users/:id:
+  *   put:
+  *     summary: Updates a specific user
+  *     tags: [Users]
+  *     requestBody:
+  *       description: The user's properties to update
+  *       required: true
+  *       content:
+  *         application/json:
+  *           schema:
+  *             $ref: '#/definitions/User'
+  *     responses:
+  *       200:
+  *         description: The user updated
+  *         content:
+  *           application/json:
+  *             schema:
+  *               $ref: '#/definitions/User'
+  *       404:
+  *         description: user not found
+  *       400:
+  *         description: invalid user data
+  *       500:
+  *         description: Internal server error
+  */
+  async updateUser (req: Request, res: Response): Promise<void> {
+    try {
+      const id = Number(req.params.id);
+      const userUpdate = plainToInstance(UserUpdateDTO, req.body);
+
+      const result = await userService.update(id, userUpdate);
+
+      res.status(result.statusCode).json({ message: result.message, entity: result.entity });
+    } catch (error) {
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(`Server error: ${error}`);
+    }
+  }
+
+  /**
  * @swagger
  * /users/state/:id:
  *   patch:
@@ -179,75 +254,6 @@ export class UserController {
       const result = await userService.changeUserState(id);
 
       res.status(result.statusCode).send({ message: result.message });
-    } catch (error) {
-      res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(`Server error: ${error}`);
-    }
-  }
-
-  /**
- * @swagger
- * /users/:id:
- *   get:
- *     summary: Finds a specific user
- *     tags: [Users]
- *     responses:
- *       200:
- *         description: The user found
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/definitions/User'
- *       404:
- *         description: User not found
- *       500:
- *         description: Internal server error
- */
-  async getUser (req: Request, res: Response): Promise<void> {
-    try {
-      const id = Number(req.params.id);
-      const result = await userService.findOneById(id);
-
-      res.status(result.statusCode).json({ message: result.message, entity: result.entity });
-    } catch (error) {
-      res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(`Server error: ${error}`);
-    }
-  }
-
-  /**
- * @swagger
- * /users/:id:
- *   put:
- *     summary: Updates a specific user
- *     tags: [Users]
- *     requestBody:
- *       description: The user's properties to update
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/definitions/User'
- *     responses:
- *       200:
- *         description: The user updated
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/definitions/User'
- *       404:
- *         description: user not found
- *       400:
- *         description: invalid user data
- *       500:
- *         description: Internal server error
- */
-  async updateUser (req: Request, res: Response): Promise<void> {
-    try {
-      const id = Number(req.params.id);
-      const userUpdate = plainToInstance(UserUpdateDTO, req.body);
-
-      const result = await userService.update(id, userUpdate);
-
-      res.status(result.statusCode).json({ message: result.message, entity: result.entity });
     } catch (error) {
       res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(`Server error: ${error}`);
     }
