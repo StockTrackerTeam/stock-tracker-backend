@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsNumber, IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
 import { ValidatePassword } from '../utils/decorators/password.decorator';
 
 export class UserCreateDTO {
@@ -39,6 +39,10 @@ export class UserCreateDTO {
   @IsEmail()
   @IsOptional()
     confirmEmail: string;
+
+  @IsNumber()
+  @IsNotEmpty()
+    roleId: number;
 }
 
 export class UserUpdateDTO {
@@ -79,4 +83,19 @@ export class UserUpdateDTO {
   @IsEmail()
   @IsOptional()
     confirmEmail: string;
+}
+
+export class loginDTO {
+  @IsString()
+  @IsNotEmpty()
+  @MinLength(6)
+  @MaxLength(20)
+    username: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @MinLength(8)
+  @MaxLength(30)
+  @ValidatePassword()
+    password: string;
 }

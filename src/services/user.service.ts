@@ -5,6 +5,7 @@ import { StatusCodes } from 'http-status-codes';
 import { type IResult, RESULT_OK, USER_NOT_FOUND } from '../utils/interfaces/result.interface';
 import { type User } from '../entities/user.entity';
 import { extractErrorKeysFromErrors } from '../utils/functions';
+import bcrypt from 'bcrypt';
 
 const userRepository = new UserRepository();
 
@@ -40,7 +41,11 @@ export class UserService {
       };
     }
 
-    const userCreated = await userRepository.save({ ...userCreateDTO, isActive: true });
+    const salt = await bcrypt.genSalt(10);
+    const password = await bcrypt.hash(userCreateDTO.password, salt);
+    const { confirmEmail, confirmPassword, ...userCreate } = userCreateDTO;
+
+    const userCreated = await userRepository.save({ ...userCreate, isActive: true, password });
 
     return {
       statusCode: StatusCodes.CREATED,
@@ -53,32 +58,6 @@ export class UserService {
   async find (): Promise<User[]> {
     // TODO: add patterns for searching users
     return await userRepository.find();
-  }
-
-  async changeUserState (id: number): Promise<IResult> {
-    const currentUser = await userRepository.findOneBy({ id });
-
-    if (currentUser === null) {
-      return {
-        statusCode: StatusCodes.NOT_FOUND,
-        message: `No user found with ID: ${id}`,
-        entity: null,
-        resultKeys: [USER_NOT_FOUND]
-      };
-    }
-
-    currentUser.isActive = !currentUser.isActive;
-    const state = currentUser.isActive ? 'ACTIVE' : 'INACTIVE';
-
-    await userRepository.save(currentUser);
-
-    const updatedUser = await userRepository.findOneBy({ id });
-    return {
-      statusCode: StatusCodes.OK,
-      message: `The state of the user with ID ${id} has been changed to ${state}`,
-      entity: updatedUser,
-      resultKeys: [RESULT_OK]
-    };
   }
 
   async findOneById (id: number): Promise<IResult> {
@@ -97,28 +76,6 @@ export class UserService {
       statusCode: StatusCodes.OK,
       message: 'User found',
       entity: user,
-      resultKeys: [RESULT_OK]
-    };
-  }
-
-  async delete (id: number): Promise<IResult> {
-    const userToDelete = await userRepository.findOneBy({ id });
-
-    if (userToDelete === null) {
-      return {
-        statusCode: StatusCodes.NOT_FOUND,
-        message: `No user found with ID: ${id}`,
-        entity: null,
-        resultKeys: [USER_NOT_FOUND]
-      };
-    }
-
-    await userRepository.update(id, { deletedAt: new Date() });
-
-    return {
-      statusCode: StatusCodes.OK,
-      message: `User with ID ${id} successfully deleted`,
-      entity: null,
       resultKeys: [RESULT_OK]
     };
   }
@@ -183,6 +140,54 @@ export class UserService {
       statusCode: StatusCodes.OK,
       message: 'User updated!',
       entity: updatedUser,
+      resultKeys: [RESULT_OK]
+    };
+  }
+
+  async changeUserState (id: number): Promise<IResult> {
+    const currentUser = await userRepository.findOneBy({ id });
+
+    if (currentUser === null) {
+      return {
+        statusCode: StatusCodes.NOT_FOUND,
+        message: `No user found with ID: ${id}`,
+        entity: null,
+        resultKeys: [USER_NOT_FOUND]
+      };
+    }
+
+    currentUser.isActive = !currentUser.isActive;
+    const state = currentUser.isActive ? 'ACTIVE' : 'INACTIVE';
+
+    await userRepository.save(currentUser);
+
+    const updatedUser = await userRepository.findOneBy({ id });
+    return {
+      statusCode: StatusCodes.OK,
+      message: `The state of the user with ID ${id} has been changed to ${state}`,
+      entity: updatedUser,
+      resultKeys: [RESULT_OK]
+    };
+  }
+
+  async delete (id: number): Promise<IResult> {
+    const userToDelete = await userRepository.findOneBy({ id });
+
+    if (userToDelete === null) {
+      return {
+        statusCode: StatusCodes.NOT_FOUND,
+        message: `No user found with ID: ${id}`,
+        entity: null,
+        resultKeys: [USER_NOT_FOUND]
+      };
+    }
+
+    await userRepository.update(id, { deletedAt: new Date() });
+
+    return {
+      statusCode: StatusCodes.OK,
+      message: `User with ID ${id} successfully deleted`,
+      entity: null,
       resultKeys: [RESULT_OK]
     };
   }
